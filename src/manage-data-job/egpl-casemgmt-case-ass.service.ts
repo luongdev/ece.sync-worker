@@ -10,8 +10,8 @@ import { CronJob } from 'cron';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class ManageDataJobService implements OnModuleInit, OnModuleDestroy {
-  private readonly _egplCasemgmtCaseAssJob: CronJob<null, ManageDataJobService>;
+export class EgplCasemgmtCaseAssService implements OnModuleInit, OnModuleDestroy {
+  private readonly _egplCasemgmtCaseAssJob: CronJob<null, EgplCasemgmtCaseAssService>;
   private _running = false;
   private readonly _log: LoggerService;
   private readonly limitCountData: number;
@@ -23,8 +23,8 @@ export class ManageDataJobService implements OnModuleInit, OnModuleDestroy {
     @InjectRepository(egplCasemgmtCaseAssEntity, 'db_destination')
     private readonly egplCasemgmtCaseAssRepository: Repository<egplCasemgmtCaseAssEntity>,
   ) {
-    this._log = loggerFactory.createLogger(ManageDataJobService);
-    const timeJob = this._configService.get('TIME_START_JOB') || '*/5 * * * *';
+    this._log = loggerFactory.createLogger(EgplCasemgmtCaseAssService);
+    const timeJob = this._configService.get('TIME_START_JOB_EGPL_CASEMGMT_CASE_ASS') || '*/5 * * * *';
     this.limitCountData = this._configService.get('LIMIT_COUNT_DATA') || 100;
     this._egplCasemgmtCaseAssJob = CronJob.from({
       cronTime: timeJob,
@@ -77,13 +77,13 @@ export class ManageDataJobService implements OnModuleInit, OnModuleDestroy {
                 }
                 break;
               default:
-                return this._log.info(`Job sync egplCasemgmtCaseAssRepository with operation ${el.operation} not in enum !`);;
+                return this._log.info(`Job sync with operation ${el.operation} not in enum !`);;
             }
           } catch (error) {
             throw new Error(error.message);
           }
         }
-        this._log.info('Job sync egplCasemgmtCaseAssRepository complete !');
+        this._log.info('Job sync complete !');
       }
     } catch (e) {
       this._log.info(`Job sync data error: ${e.message}`);

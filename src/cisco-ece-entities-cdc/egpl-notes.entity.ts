@@ -4,8 +4,8 @@ import {
   PrimaryColumn,
 } from "typeorm";
 
-@Entity({ name: "cdc.dbo_EGPL_NOTES" })
-export class egplNotesEntity {
+@Entity({ name: "cdc.dbo_EGPL_NOTES_CT" })
+export class egplNotesCDCEntity {
   @PrimaryColumn({ name: "NOTE_ID" })
   noteId: number;
 
@@ -38,4 +38,7 @@ export class egplNotesEntity {
 
   @Column({ nullable: true, name: "PARENT_NOTE_ID" })
   parentNoteId: number;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 }

@@ -3,8 +3,8 @@ import {
   Entity,
   PrimaryColumn,
 } from "typeorm";
-@Entity({ name: "cdc.dbo_EGPL_USER" })
-export class egplUserEntity {
+@Entity({ name: "cdc.dbo_EGPL_USER_CT" })
+export class egplUserCDCEntity {
   @PrimaryColumn({ name: "USED_ID" })
   userId: number;
 
@@ -127,4 +127,7 @@ export class egplUserEntity {
 
   @Column({ nullable: false, name: "AUTHENTICATION_TYPE" })
   authenticationType: number;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 }

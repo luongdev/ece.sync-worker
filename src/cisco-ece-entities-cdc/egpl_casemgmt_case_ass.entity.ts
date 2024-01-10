@@ -10,11 +10,4 @@ export class egplCasemgmtCaseAssCDCEntity {
 
   @PrimaryColumn({ name: '__$operation' })
   operation: string;
-
-  @PrimaryColumn({ name: '__$start_lsn' })
-  start_lsn: Buffer;
-
-  @PrimaryColumn({ name: '__$seqval' })
-  seqval: Buffer;
-
 }

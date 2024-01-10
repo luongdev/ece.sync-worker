@@ -4,8 +4,8 @@ import {
   PrimaryColumn,
 } from "typeorm";
 
-@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_CASE" })
-export class egplCasemgmtCaseEntity {
+@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_CASE_CT" })
+export class egplCasemgmtCaseCDCEntity {
   @PrimaryColumn({ name: "CASE_ID" })
   caseId: number;
 
@@ -65,5 +65,8 @@ export class egplCasemgmtCaseEntity {
 
   @Column({ nullable: false, name: "DELETE_FLAG" })
   deleteFlag: string;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 
 }

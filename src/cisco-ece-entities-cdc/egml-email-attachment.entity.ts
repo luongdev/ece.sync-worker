@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'cdc.dbo_EGML_EMAIL_ATTACHMENT' })
-export class egmlEmailAttachmentEntity {
+@Entity({ name: 'cdc.dbo_EGML_EMAIL_ATTACHMENT_CT' })
+export class egmlEmailAttachmentCDCEntity {
   @PrimaryColumn({ type: 'numeric', name: 'EMAIL_ATTACHMENT_ID' })
   id: number;
 
@@ -25,4 +25,7 @@ export class egmlEmailAttachmentEntity {
 
   @Column({ nullable: true, name: 'CONTENT' })
   content: Buffer;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 }

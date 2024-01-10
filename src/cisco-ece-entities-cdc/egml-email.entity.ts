@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'cdc.dbo_EGML_EMAIL' })
-export class egmlEmailEntity {
+@Entity({ name: 'cdc.dbo_EGML_EMAIL_CT' })
+export class egmlEmailCDCEntity {
     @PrimaryColumn({ name: 'EMAIL_ID' })
     emailId: number;
 
@@ -37,4 +37,7 @@ export class egmlEmailEntity {
 
     @Column({ nullable: false, name: 'DELETE_FLAG' })
     deleteFlag: string;
+
+    @PrimaryColumn({ name: '__$operation' })
+    operation: string;
 };

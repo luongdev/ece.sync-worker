@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'cdc.dbo_EGPL_DEPARTMENT' })
-export class egplDepartmentEntity {
+@Entity({ name: 'cdc.dbo_EGPL_DEPARTMENT_CT' })
+export class egplDepartmentCDCEntity {
     @PrimaryColumn({ name: 'DEPARTMENT_ID' })
     departmentId: number;
 
@@ -13,4 +13,7 @@ export class egplDepartmentEntity {
 
     @Column({ nullable: true, name: 'DELETE_FLAG' })
     deleteFlag: string;
+
+    @PrimaryColumn({ name: '__$operation' })
+    operation: string;
 }

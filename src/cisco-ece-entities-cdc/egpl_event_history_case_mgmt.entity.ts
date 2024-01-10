@@ -4,8 +4,8 @@ import {
   Column,
 } from "typeorm";
 
-@Entity({ name: "cdc.dbo_EGPL_EVENT_HISTORY_CASE_MGMT" })
-export class egplEventHistoryCaseMgmtEntity {
+@Entity({ name: "cdc.dbo_EGPL_EVENT_HISTORY_CASE_MGMT_CT" })
+export class egplEventHistoryCaseMgmtCDCEntity {
   @PrimaryColumn({ name: "EVENT_ID" })
   eventId: number;
 
@@ -95,4 +95,7 @@ export class egplEventHistoryCaseMgmtEntity {
 
   @Column({ nullable: false, name: "UPDATE_VERSION" })
   updateVersion: Date;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 }

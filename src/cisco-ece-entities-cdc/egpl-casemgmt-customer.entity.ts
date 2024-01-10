@@ -4,8 +4,8 @@ import {
   PrimaryColumn,
 } from "typeorm";
 
-@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_CUSTOMER" })
-export class egplCasemgmtCustomerEntity {
+@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_CUSTOMER_CT" })
+export class egplCasemgmtCustomerCDCEntity {
   @PrimaryColumn({ name: "CUSTOMER_ID" })
   customerId: number;
 
@@ -71,4 +71,7 @@ export class egplCasemgmtCustomerEntity {
 
   @Column({ nullable: false, name: "WHEN_MODIFIED" })
   whenModified: Date;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 }

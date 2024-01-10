@@ -5,7 +5,7 @@ import {
 } from "typeorm";
 
 @Entity({ name: "EGPL_CASEMGMT_ACTIVITY" })
-export class egplCasemgmtActivity {
+export class egplCasemgmtActivityEntity {
   @PrimaryColumn({ name: "ACTIVITY_ID" })
   activityId: number;
 

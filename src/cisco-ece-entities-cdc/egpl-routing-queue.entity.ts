@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'cdc.dbo_EGPL_ROUTING_QUEUE' })
-export class egplRoutingQueueEntity {
+@Entity({ name: 'cdc.dbo_EGPL_ROUTING_QUEUE_CT' })
+export class egplRoutingQueueCDCEntity {
   @PrimaryColumn({ name: 'QUEUE_ID' })
   queueId: number;
 
@@ -79,5 +79,8 @@ export class egplRoutingQueueEntity {
 
   @Column({ nullable: false, name: 'CHAT_ALTERNATE_ENGAGEMENT' })
   chatAlternateEngagement: number;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 
 };

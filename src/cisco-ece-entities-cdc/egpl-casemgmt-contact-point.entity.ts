@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'cdc.dbo_EGPL_CASEMGMT_CONTACT_POINT' })
-export class egplCasemgmtContactPointEntity {
+@Entity({ name: 'cdc.dbo_EGPL_CASEMGMT_CONTACT_POINT_CT' })
+export class egplCasemgmtContactPointCDCEntity {
     @PrimaryColumn({ name: 'CONTACT_POINT_ID' })
     contactPointId: number;
 
@@ -31,4 +31,7 @@ export class egplCasemgmtContactPointEntity {
 
     @Column({ nullable: false, name: 'AUTO_PROVISIONED' })
     autoProvisioned: Date;
+
+    @PrimaryColumn({ name: '__$operation' })
+    operation: string;
 }

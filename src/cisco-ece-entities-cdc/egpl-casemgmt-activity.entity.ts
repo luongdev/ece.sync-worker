@@ -4,8 +4,8 @@ import {
   PrimaryColumn,
 } from "typeorm";
 
-@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_ACTIVITY" })
-export class egplCasemgmtActivity {
+@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_ACTIVITY_CT" })
+export class egplCasemgmtActivityCDCEntity {
   @PrimaryColumn({ name: "ACTIVITY_ID" })
   activityId: number;
 
@@ -134,4 +134,7 @@ export class egplCasemgmtActivity {
 
   @Column({ nullable: true, name: "ISSUE_TYPE_ID" })
   issueTypeId: number;
+
+  @PrimaryColumn({ name: '__$operation' })
+  operation: string;
 }
