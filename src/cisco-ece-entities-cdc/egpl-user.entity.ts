@@ -3,7 +3,7 @@ import {
   Entity,
   PrimaryColumn,
 } from "typeorm";
-@Entity({ name: "EGPL_USER" })
+@Entity({ name: "cdc.dbo_EGPL_USER" })
 export class egplUserEntity {
   @PrimaryColumn({ name: "USED_ID" })
   userId: number;

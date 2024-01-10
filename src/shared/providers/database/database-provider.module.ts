@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
+      name: 'db_source',
       inject: [ConfigService],
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -18,14 +19,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           password: dbConfigService.password,
           database: dbConfigService.databaseSource,
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          migrations: await dbConfigService.enableCDC(),
+          migrationsRun: true,
           extra: {
             trustServerCertificate: true,
           },
+          autoLoadEntities: true,
           // logging: true
         } as TypeOrmModuleAsyncOptions);
       },
     }),
     TypeOrmModule.forRootAsync({
+      name: 'db_destination',
       inject: [ConfigService],
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -51,6 +56,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   providers: [DatabaseConfigService],
 })
-export class DatabaseProviderModule {
-
-}
+export class DatabaseProviderModule { }

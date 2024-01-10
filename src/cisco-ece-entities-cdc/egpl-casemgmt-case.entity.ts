@@ -4,7 +4,7 @@ import {
   PrimaryColumn,
 } from "typeorm";
 
-@Entity({ name: "EGPL_CASEMGMT_CASE" })
+@Entity({ name: "cdc.dbo_EGPL_CASEMGMT_CASE" })
 export class egplCasemgmtCaseEntity {
   @PrimaryColumn({ name: "CASE_ID" })
   caseId: number;

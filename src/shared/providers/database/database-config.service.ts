@@ -53,4 +53,21 @@ export class DatabaseConfigService {
 
     return migrations;
   }
+
+  async enableCDC() {
+    let migrations = [];
+    const migrationsDir = process.env.PATH_MIGRATION ? process.env.PATH_MIGRATION : join(process.cwd(), 'dist', 'src', 'enable-cdc');
+
+    if (!existsSync(migrationsDir)) return migrations;
+
+    const migrationFiles = readdirSync(migrationsDir)
+      .filter(f => f.endsWith('.js') && !f.endsWith('d.js'));
+
+    for (const file of migrationFiles) {
+      const migrationClass = await import(`${migrationsDir}/${file}`);
+      migrations = [...migrations, ...Object.values(migrationClass)];
+    }
+
+    return migrations;
+  }
 }

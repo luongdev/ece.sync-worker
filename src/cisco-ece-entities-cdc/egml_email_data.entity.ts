@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'EGML_EMAIL_DATA' })
+@Entity({ name: 'cdc.dbo_EGML_EMAIL_DATA' })
 export class egmlEmailDataEntity {
     @PrimaryColumn({ name: 'EMAIL_ID' })
     emailId: number;

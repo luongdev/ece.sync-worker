@@ -4,7 +4,7 @@ import {
   Column,
 } from "typeorm";
 
-@Entity({ name: "EGPL_EVENT_HISTORY_CASE_MGMT" })
+@Entity({ name: "cdc.dbo_EGPL_EVENT_HISTORY_CASE_MGMT" })
 export class egplEventHistoryCaseMgmtEntity {
   @PrimaryColumn({ name: "EVENT_ID" })
   eventId: number;

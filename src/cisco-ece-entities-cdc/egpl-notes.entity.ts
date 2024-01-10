@@ -4,7 +4,7 @@ import {
   PrimaryColumn,
 } from "typeorm";
 
-@Entity({ name: "EGPL_NOTES" })
+@Entity({ name: "cdc.dbo_EGPL_NOTES" })
 export class egplNotesEntity {
   @PrimaryColumn({ name: "NOTE_ID" })
   noteId: number;

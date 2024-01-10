@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity({ name: 'EGPL_ROUTING_QUEUE' })
+@Entity({ name: 'cdc.dbo_EGPL_ROUTING_QUEUE' })
 export class egplRoutingQueueEntity {
   @PrimaryColumn({ name: 'QUEUE_ID' })
   queueId: number;
