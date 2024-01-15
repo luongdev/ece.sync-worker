@@ -55,7 +55,7 @@ export class EgplCasemgmtActivityService implements OnModuleInit, OnModuleDestro
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplCasemgmtActivityRepository.delete({ activityId: el.activityId });
-                                    await this.egplCasemgmtActivityCDCRepository.delete(el);
+                                    await this.egplCasemgmtActivityCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplCasemgmtActivityService implements OnModuleInit, OnModuleDestro
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplCasemgmtActivityRepository.insert(el);
-                                    await this.egplCasemgmtActivityCDCRepository.delete(el);
+                                    await this.egplCasemgmtActivityCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplCasemgmtActivityRepository.update({ activityId: el.activityId }, el);
-                                    await this.egplCasemgmtActivityCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplCasemgmtActivityRepository.update({ activityId: el.activityId }, dataUpdate);
+                                    await this.egplCasemgmtActivityCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

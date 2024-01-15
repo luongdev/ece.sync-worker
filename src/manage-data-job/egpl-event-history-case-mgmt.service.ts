@@ -55,7 +55,7 @@ export class EgplEventHistoryCasemgmtService implements OnModuleInit, OnModuleDe
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplEventHistoryCaseMgmtRepository.delete({ eventId: el.eventId, eventDate: el.eventDate });
-                                    await this.egplEventHistoryCaseMgmtCDCRepository.delete(el);
+                                    await this.egplEventHistoryCaseMgmtCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplEventHistoryCasemgmtService implements OnModuleInit, OnModuleDe
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplEventHistoryCaseMgmtRepository.insert(el);
-                                    await this.egplEventHistoryCaseMgmtCDCRepository.delete(el);
+                                    await this.egplEventHistoryCaseMgmtCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplEventHistoryCaseMgmtRepository.update({ eventId: el.eventId, eventDate: el.eventDate }, el);
-                                    await this.egplEventHistoryCaseMgmtCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplEventHistoryCaseMgmtRepository.update({ eventId: el.eventId, eventDate: el.eventDate }, dataUpdate);
+                                    await this.egplEventHistoryCaseMgmtCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

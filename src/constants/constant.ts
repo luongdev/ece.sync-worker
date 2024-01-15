@@ -21,5 +21,6 @@ export const LIST_TABLE_NAME = [
 export const OPERATION = {
     DELETE: 1,
     INSERT: 2,
-    UPDATE: 3,
+    UPDATE_BEFORE: 3,
+    UPDATE_AFTER: 4,
 };

@@ -55,7 +55,7 @@ export class EgplCasemgmtContactPointService implements OnModuleInit, OnModuleDe
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplCasemgmtContactPointRepository.delete({ contactPointId: el.contactPointId });
-                                    await this.egplCasemgmtContactPointCDCRepository.delete(el);
+                                    await this.egplCasemgmtContactPointCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplCasemgmtContactPointService implements OnModuleInit, OnModuleDe
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplCasemgmtContactPointRepository.insert(el);
-                                    await this.egplCasemgmtContactPointCDCRepository.delete(el);
+                                    await this.egplCasemgmtContactPointCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplCasemgmtContactPointRepository.update({ contactPointId: el.contactPointId }, el);
-                                    await this.egplCasemgmtContactPointCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplCasemgmtContactPointRepository.update({ contactPointId: el.contactPointId }, dataUpdate);
+                                    await this.egplCasemgmtContactPointCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

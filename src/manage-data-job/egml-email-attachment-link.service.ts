@@ -64,7 +64,7 @@ export class EgmlEmailAttachmentLinkService
                                         emailId: el.emailId,
                                         emailAttachmentId: el.emailAttachmentId
                                     });
-                                    await this.egmlEmailAttachmentLinkCDCRepository.delete(el);
+                                    await this.egmlEmailAttachmentLinkCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -72,21 +72,27 @@ export class EgmlEmailAttachmentLinkService
                             case OPERATION.INSERT:
                                 try {
                                     await this.egmlEmailAttachmentLinkRepository.insert(el);
-                                    await this.egmlEmailAttachmentLinkCDCRepository.delete(el);
+                                    await this.egmlEmailAttachmentLinkCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
                                     await this.egmlEmailAttachmentLinkRepository.update(
                                         {
                                             emailId: el.emailId,
                                             emailAttachmentId: el.emailAttachmentId
                                         },
-                                        el
+                                        dataUpdate
                                     );
-                                    await this.egmlEmailAttachmentLinkCDCRepository.delete(el);
+                                    await this.egmlEmailAttachmentLinkCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

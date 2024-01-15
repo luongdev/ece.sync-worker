@@ -55,7 +55,7 @@ export class EgplCasemgmtCaseAssService implements OnModuleInit, OnModuleDestroy
               case OPERATION.DELETE:
                 try {
                   await this.egplCasemgmtCaseAssRepository.delete({ caseId: el.caseId, caseGroupId: el.caseGroupId });
-                  await this.egplCasemgmtCaseAssCDCRepository.delete(el);
+                  await this.egplCasemgmtCaseAssCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                 } catch (error) {
                   throw new Error(error.message);
                 }
@@ -63,15 +63,21 @@ export class EgplCasemgmtCaseAssService implements OnModuleInit, OnModuleDestroy
               case OPERATION.INSERT:
                 try {
                   await this.egplCasemgmtCaseAssRepository.insert(el);
-                  await this.egplCasemgmtCaseAssCDCRepository.delete(el);
+                  await this.egplCasemgmtCaseAssCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                 } catch (error) {
                   throw new Error(error.message);
                 }
                 break;
-              case OPERATION.UPDATE:
+              case OPERATION.UPDATE_BEFORE:
+              case OPERATION.UPDATE_AFTER:
                 try {
-                  await this.egplCasemgmtCaseAssRepository.update({ caseId: el.caseId, caseGroupId: el.caseGroupId }, el);
-                  await this.egplCasemgmtCaseAssCDCRepository.delete(el);
+                  const dataUpdate = { ...el };
+                  delete dataUpdate.commandId;
+                  delete dataUpdate.operation;
+                  delete dataUpdate.startLSN;
+                  delete dataUpdate.seqVal;
+                  await this.egplCasemgmtCaseAssRepository.update({ caseId: el.caseId, caseGroupId: el.caseGroupId }, dataUpdate);
+                  await this.egplCasemgmtCaseAssCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                 } catch (error) {
                   throw new Error(error.message);
                 }

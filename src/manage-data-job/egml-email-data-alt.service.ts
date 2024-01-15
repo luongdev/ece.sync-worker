@@ -63,7 +63,7 @@ export class EgmlEmailDataAltService
                                     await this.egmlEmailDataAltRepository.delete({
                                         emailId: el.emailId,
                                     });
-                                    await this.egmlEmailDataAltCDCRepository.delete(el);
+                                    await this.egmlEmailDataAltCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -71,18 +71,24 @@ export class EgmlEmailDataAltService
                             case OPERATION.INSERT:
                                 try {
                                     await this.egmlEmailDataAltRepository.insert(el);
-                                    await this.egmlEmailDataAltCDCRepository.delete(el);
+                                    await this.egmlEmailDataAltCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
                                     await this.egmlEmailDataAltRepository.update(
                                         { emailId: el.emailId },
-                                        el
+                                        dataUpdate
                                     );
-                                    await this.egmlEmailDataAltCDCRepository.delete(el);
+                                    await this.egmlEmailDataAltCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

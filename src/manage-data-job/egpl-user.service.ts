@@ -55,7 +55,7 @@ export class EgplUserService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplUserRepository.delete({ userId: el.userId });
-                                    await this.egplUserCDCRepository.delete(el);
+                                    await this.egplUserCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplUserService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplUserRepository.insert(el);
-                                    await this.egplUserCDCRepository.delete(el);
+                                    await this.egplUserCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplUserRepository.update({ userId: el.userId }, el);
-                                    await this.egplUserCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplUserRepository.update({ userId: el.userId }, dataUpdate);
+                                    await this.egplUserCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

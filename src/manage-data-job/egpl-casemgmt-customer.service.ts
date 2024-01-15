@@ -55,7 +55,7 @@ export class EgplCasemgmtCustomerService implements OnModuleInit, OnModuleDestro
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplCasemgmtCustomerRepository.delete({ customerId: el.customerId });
-                                    await this.egplCasemgmtCustomerCDCRepository.delete(el);
+                                    await this.egplCasemgmtCustomerCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplCasemgmtCustomerService implements OnModuleInit, OnModuleDestro
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplCasemgmtCustomerRepository.insert(el);
-                                    await this.egplCasemgmtCustomerCDCRepository.delete(el);
+                                    await this.egplCasemgmtCustomerCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplCasemgmtCustomerRepository.update({ customerId: el.customerId }, el);
-                                    await this.egplCasemgmtCustomerCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplCasemgmtCustomerRepository.update({ customerId: el.customerId }, dataUpdate);
+                                    await this.egplCasemgmtCustomerCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

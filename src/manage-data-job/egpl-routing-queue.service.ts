@@ -55,7 +55,7 @@ export class EgplRoutingQueueService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplRoutingQueueRepository.delete({ queueId: el.queueId });
-                                    await this.egplRoutingQueueCDCRepository.delete(el);
+                                    await this.egplRoutingQueueCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplRoutingQueueService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplRoutingQueueRepository.insert(el);
-                                    await this.egplRoutingQueueCDCRepository.delete(el);
+                                    await this.egplRoutingQueueCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplRoutingQueueRepository.update({ queueId: el.queueId }, el);
-                                    await this.egplRoutingQueueCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplRoutingQueueRepository.update({ queueId: el.queueId }, dataUpdate);
+                                    await this.egplRoutingQueueCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

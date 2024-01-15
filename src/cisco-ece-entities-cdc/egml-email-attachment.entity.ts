@@ -27,5 +27,14 @@ export class egmlEmailAttachmentCDCEntity {
   content: Buffer;
 
   @PrimaryColumn({ name: '__$operation' })
-  operation: string;
+  operation: number;
+
+  @PrimaryColumn({ name: '__$start_lsn' })
+  startLSN: Buffer;
+
+  @PrimaryColumn({ name: '__$seqval' })
+  seqVal: Buffer;
+
+  @PrimaryColumn({ name: '__$command_id' })
+  commandId: number;
 }

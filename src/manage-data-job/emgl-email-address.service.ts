@@ -65,7 +65,7 @@ export class EgmlEmailAddressService
                                         emailAddress: el.emailAddress,
                                         addressFlag: el.addressFlag
                                     });
-                                    await this.egmlEmailAddressCDCRepository.delete(el);
+                                    await this.egmlEmailAddressCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -73,22 +73,28 @@ export class EgmlEmailAddressService
                             case OPERATION.INSERT:
                                 try {
                                     await this.egmlEmailAddressRepository.insert(el);
-                                    await this.egmlEmailAddressCDCRepository.delete(el);
+                                    await this.egmlEmailAddressCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
                                     await this.egmlEmailAddressRepository.update(
                                         {
                                             emailId: el.emailId,
                                             emailAddress: el.emailAddress,
                                             addressFlag: el.addressFlag
                                         },
-                                        el
+                                        dataUpdate
                                     );
-                                    await this.egmlEmailAddressCDCRepository.delete(el);
+                                    await this.egmlEmailAddressCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

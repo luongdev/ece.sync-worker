@@ -55,23 +55,36 @@ export class EgplNoteService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplNotesRepository.delete({ noteId: el.noteId });
-                                    await this.egplNotesCDCRepository.delete(el);
+                                    await this.egplNotesCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
                             case OPERATION.INSERT:
                                 try {
-                                    await this.egplNotesRepository.insert(el);
-                                    await this.egplNotesCDCRepository.delete(el);
+                                    const dataInsert = { ...el };
+                                    delete dataInsert.commandId;
+                                    delete dataInsert.operation;
+                                    delete dataInsert.startLSN;
+                                    delete dataInsert.seqVal;
+                                    dataInsert.noteOfIdTemp = el.noteOfId;
+                                    await this.egplNotesRepository.insert(dataInsert);
+                                    await this.egplNotesCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplNotesRepository.update({ noteId: el.noteId }, el);
-                                    await this.egplNotesCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    dataUpdate.noteOfIdTemp = el.noteOfId;
+                                    await this.egplNotesRepository.update({ noteId: el.noteId }, dataUpdate);
+                                    await this.egplNotesCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }

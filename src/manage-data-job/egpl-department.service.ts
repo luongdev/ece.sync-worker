@@ -55,7 +55,7 @@ export class EgplDepartmentService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.DELETE:
                                 try {
                                     await this.egplDepartmentRepository.delete({ departmentId: el.departmentId });
-                                    await this.egplDepartmentCDCRepository.delete(el);
+                                    await this.egplDepartmentCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
@@ -63,15 +63,21 @@ export class EgplDepartmentService implements OnModuleInit, OnModuleDestroy {
                             case OPERATION.INSERT:
                                 try {
                                     await this.egplDepartmentRepository.insert(el);
-                                    await this.egplDepartmentCDCRepository.delete(el);
+                                    await this.egplDepartmentCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
                                 break;
-                            case OPERATION.UPDATE:
+                            case OPERATION.UPDATE_BEFORE:
+                            case OPERATION.UPDATE_AFTER:
                                 try {
-                                    await this.egplDepartmentRepository.update({ departmentId: el.departmentId }, el);
-                                    await this.egplDepartmentCDCRepository.delete(el);
+                                    const dataUpdate = { ...el };
+                                    delete dataUpdate.commandId;
+                                    delete dataUpdate.operation;
+                                    delete dataUpdate.startLSN;
+                                    delete dataUpdate.seqVal;
+                                    await this.egplDepartmentRepository.update({ departmentId: el.departmentId }, dataUpdate);
+                                    await this.egplDepartmentCDCRepository.delete({ operation: el.operation, startLSN: el.startLSN, seqVal: el.seqVal, commandId: el.commandId });
                                 } catch (error) {
                                     throw new Error(error.message);
                                 }
