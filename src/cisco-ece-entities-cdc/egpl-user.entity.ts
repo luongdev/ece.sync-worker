@@ -5,7 +5,7 @@ import {
 } from "typeorm";
 @Entity({ name: "cdc.dbo_EGPL_USER_CT" })
 export class egplUserCDCEntity {
-  @PrimaryColumn({ name: "USED_ID" })
+  @PrimaryColumn({ name: "USER_ID" })
   userId: number;
 
   @Column({ nullable: true, name: "SALUTATION" })

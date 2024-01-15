@@ -5,7 +5,7 @@ import {
 } from "typeorm";
 @Entity({ name: "EGPL_USER" })
 export class egplUserEntity {
-  @PrimaryColumn({ name: "USED_ID" })
+  @PrimaryColumn({ name: "USER_ID" })
   userId: number;
 
   @Column({ nullable: true, name: "SALUTATION" })
